@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Überprüfung läuft…</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#f4f4f4;color:#222}
+.screen{display:none;min-height:100vh;min-height:100dvh;padding:24px 18px;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.screen.on{display:flex}
+h1{font-size:1.5rem;margin:0 0 10px}
+p{line-height:1.5;margin:8px 0}
+.small{font-size:.8rem;color:#777}
+button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:14px 22px;font-weight:600}
+button:disabled{opacity:.4;cursor:not-allowed}
+.btn{background:#1a73e8;color:#fff}
+
+/* S0 Cloudflare-Look */
+.spin{width:44px;height:44px;border:5px solid #ddd;border-top-color:#f6821f;border-radius:50%;animation:sp 1s linear infinite;margin:18px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.cf{font-size:.75rem;color:#888;margin-top:36px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:18px;z-index:9}
+.ov.on{display:flex}
+.pop{background:#fffbe6;border:4px dashed #e60000;border-radius:14px;padding:22px 18px;max-width:380px;width:100%;position:relative;animation:pulse 1s ease-in-out infinite alternate}
+@keyframes pulse{to{transform:scale(1.03)}}
+.pop h2{color:#e60000;margin:6px 0;font-size:1.5rem}
+.pop .price{font-size:2.2rem;font-weight:800;color:#0a8a0a}
+.pop .btn{background:#e60000;width:100%;margin-top:10px;font-size:1.1rem}
+.x{position:absolute;top:2px;right:4px;background:none;color:#aaa;font-size:.8rem;padding:6px 8px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#222;color:#fff;padding:12px 18px;border-radius:8px;display:none;z-index:20;max-width:90%}
+
+/* S1 Laden */
+#s1{background:#0d1117;color:#e6edf3}
+.bar{width:100%;max-width:420px;height:16px;background:#222c38;border-radius:9px;overflow:hidden;margin:18px 0 8px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2ea043,#58d68d)}
+#pct{font-size:3.5rem;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* S2 AGB */
+#s2{justify-content:flex-start}
+.agb{width:100%;max-width:560px;height:46vh;overflow-y:auto;text-align:left;background:#fff;border:1px solid #ccc;border-radius:8px;padding:14px;font-size:.85rem;line-height:1.5;margin:10px 0}
+.agb b{display:block;margin-top:10px}
+label.chk{display:flex;gap:10px;align-items:flex-start;text-align:left;max-width:560px;margin:8px 0}
+label.chk input{width:22px;height:22px;flex:none}
+
+/* S3 Video */
+.vid{width:100%;max-width:560px;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;margin:12px 0}
+.vid iframe{width:100%;height:100%;border:0}
+
+/* S4 Captcha */
+.cap{background:#fff;border:1px solid #ccc;border-radius:6px;width:100%;max-width:380px;box-shadow:0 2px 8px rgba(0,0,0,.15);text-align:left}
+.cap .hd{background:#1a73e8;color:#fff;padding:14px}
+.cap .hd small{display:block;opacity:.85}
+.cap .hd b{font-size:1.5rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px}
+.tile{position:relative;aspect-ratio:1;background:#ddd;overflow:hidden;border:0;padding:0;border-radius:0}
+.tile img,.tile .ph{width:100%;height:100%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:2.4rem}
+.tile.sel{outline:4px solid #1a73e8;outline-offset:-4px}
+.tile.sel::after{content:"✓";position:absolute;top:4px;left:4px;background:#1a73e8;color:#fff;width:24px;height:24px;border-radius:50%;line-height:24px;text-align:center;font-size:.85rem}
+.cap .ft{padding:10px;display:flex;justify-content:space-between;align-items:center}
+.err{color:#c00;font-weight:600;min-height:1.4em;padding:0 12px}
+.shake{animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* S5 Finale */
+#s5{background:linear-gradient(#1b1b1b,#000);color:#fff}
+.play{width:150px;height:150px;border-radius:50%;margin:20px auto;background:radial-gradient(circle at 30% 30%,#fff3b0,#e0a800 60%,#8a6400);box-shadow:0 0 40px #e0a80099;display:flex;align-items:center;justify-content:center;font-size:3.5rem;animation:pulse 1.2s ease-in-out infinite alternate}
+.gold{background:#e0a800;color:#000;font-size:1.1rem}
+.fall{position:fixed;top:-40px;font-size:1.6rem;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.opt{display:block;width:100%;max-width:380px;margin:6px auto;background:#fff;border:1px solid #ccc;color:#222}
+.rl{text-align:left;max-width:380px;width:100%;margin:10px auto;font-size:.9rem;line-height:1.7}
+.ok{color:#0a8a0a}
+.txt{width:100%;max-width:380px;font:inherit;padding:12px;border:1px solid #aaa;border-radius:8px;text-align:center}
+.geo{width:100%;max-width:380px;aspect-ratio:4/3;background:#ddd;border-radius:8px;overflow:hidden;margin:10px auto}
+.geo img,.geo .ph{width:100%;height:100%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:4.5rem}
+.ban{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:12px 16px;border-radius:10px;z-index:30;display:none;font-weight:600}
+.ck{background:#fff;border:1px solid #ccc;border-radius:10px;padding:14px;max-width:420px;width:100%;text-align:left}
+.ck .chk{margin:6px 0}
+input[type=range]{width:100%;max-width:380px;margin:18px 0}
+@media (prefers-reduced-motion:reduce){.pop,.play,.spin{animation:none}}
+</style>
+</head>
+<body>
+
+<!-- 0: Fake-Weiterleitung -->
+<section class="screen on" id="s0">
+  <h1>Einen Moment bitte…</h1>
+  <p>Wir überprüfen, ob deine Verbindung sicher ist.</p>
+  <div class="spin"></div>
+  <p class="small">Dieser Vorgang dauert nur wenige Sekunden.</p>
+  <p class="cf">Leistung &amp; Sicherheit durch <b>Cloudfake</b> · Ray ID: 8f3a9c21d7e4b650</p>
+</section>
+<div class="ov" id="ov"><div class="pop" id="pop"></div></div>
+
+<!-- 1: Laden -->
+<section class="screen" id="s1">
+  <h1>Verbindung wird hergestellt…</h1>
+  <div id="pct">0%</div>
+  <div class="bar"><i id="barfill"></i></div>
+  <p id="lmsg" class="small">Starte…</p>
+</section>
+
+<!-- 2: AGB -->
+<section class="screen" id="s2">
+  <h1>Nutzungsbedingungen</h1>
+  <p class="small">Bitte lies alles bis zum Ende durch. Wir merken, wenn du nur scrollst.</p>
+  <div class="agb" id="agb"></div>
+  <label class="chk"><input type="checkbox" id="agree" disabled><span>Ich habe alles sorgfältig gelesen und akzeptiere die Bedingungen.</span></label>
+  <button class="btn" id="agbBtn" disabled>Akzeptieren &amp; weiter</button>
+</section>
+
+<!-- 3: Video -->
+<section class="screen" id="s3">
+  <h1>Sicherheitsüberprüfung</h1>
+  <p>Schau dir das Video komplett an, um zu beweisen, dass du ein Mensch bist.</p>
+  <div class="vid" id="vid"></div>
+  <button class="btn" id="vidBtn" disabled>Weiter</button>
+</section>
+
+<!-- 4: Captcha -->
+<section class="screen" id="s4">
+  <div class="cap" id="cap">
+    <div class="hd"><small>Wähle alle Bilder mit</small><b>Hunden</b><small>Wenn nichts übrig ist, bestätige.</small></div>
+    <div class="grid" id="grid"></div>
+    <div class="err" id="err"></div>
+    <div class="ft"><span class="small">Ich bin kein Roboter</span><button class="btn" id="capBtn">Bestätigen</button></div>
+  </div>
+</section>
+
+<!-- 5: Finale -->
+<section class="screen" id="s5">
+  <h1>Glückwunsch! 🎉</h1>
+  <p>Dein exklusiver YouTube-Playbutton ist bereit zur Abholung!</p>
+  <div class="play">▶</div>
+  <button class="gold" id="claim">Jetzt abholen</button>
+  <p id="end" class="small" style="display:none;font-size:1rem;color:#fff;max-width:420px"></p>
+</section>
+
+<!-- Warteschlange -->
+<section class="screen" id="qu">
+  <h1>Du bist in der Warteschlange</h1>
+  <p>Aufgrund hoher Nachfrage bitten wir um etwas Geduld.</p>
+  <div id="qpos" style="font-size:3.8rem;font-weight:800;font-variant-numeric:tabular-nums">847</div>
+  <p class="small" id="qmsg">Position in der Warteschlange</p>
+  <button class="btn" id="qskip">Warteschlange überspringen (4,99 €)</button>
+</section>
+
+<!-- Cookies -->
+<section class="screen" id="cookie">
+  <div class="ck">
+    <h1 style="font-size:1.25rem">🍪 Wir respektieren deine Privatsphäre</h1>
+    <p class="small">Bitte deaktiviere alle Einstellungen, die du nicht möchtest.</p>
+    <div id="cklist"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn" id="ckAll" style="background:#888">Alle ablehnen</button>
+      <button class="btn" id="ckSave">Speichern</button>
+    </div>
+  </div>
+</section>
+
+<!-- Passwort -->
+<section class="screen" id="pw">
+  <h1>Erstelle ein sicheres Passwort</h1>
+  <input class="txt" id="pwin" type="text" autocomplete="off" autocapitalize="off" placeholder="Passwort">
+  <div class="rl" id="pwrules"></div>
+  <button class="btn" id="pwBtn" disabled>Passwort speichern</button>
+</section>
+
+<!-- Geo-Check -->
+<section class="screen" id="geo">
+  <h1>Geo-Check</h1>
+  <p>Wo wurde dieses Foto aufgenommen? <span class="small" id="georound"></span></p>
+  <div class="geo" id="geoimg"></div>
+  <div id="geoopts" style="width:100%"></div>
+</section>
+
+<!-- E-Mail-Code -->
+<section class="screen" id="mail">
+  <h1>E-Mail bestätigen</h1>
+  <p>Wir haben dir einen 6-stelligen Code geschickt. Gib ihn hier ein.</p>
+  <input class="txt" id="mailin" inputmode="numeric" maxlength="6" placeholder="000000">
+  <p class="small" id="mailinfo">Code wird gesendet…</p>
+  <button class="btn" id="mailBtn">Bestätigen</button>
+</section>
+
+<!-- Regler -->
+<section class="screen" id="slider">
+  <h1>Letzter Check (wirklich)</h1>
+  <p id="rngtxt"></p>
+  <div style="font-size:2.5rem;font-weight:800" id="rngval">0</div>
+  <input type="range" id="rng" min="0" max="100" step="1" value="0">
+  <button class="btn" id="rngBtn">Bestätigen</button>
+</section>
+
+<div class="ban" id="ban"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= EINSTELLUNGEN ================= */
+const CONFIG = {
+  videoId: '0v-jwct63Oo',   // <- YouTube-Video-ID hier ändern (der Teil nach v=)
+  videoStart: 111,           // Startzeit im Video in Sekunden (t=111s)
+  videoSeconds: 20,          // so lange ist der "Weiter"-Button gesperrt
+  stuckSeconds: 60,          // so lange hängt der Ladebalken bei 98 %
+  // 9 Bilder fürs Captcha. dog:true = Bild zählt als "Hund".
+  // Lege deine Fotos in einen Ordner "images" und passe die Namen an.
+  photos: [
+    {src:'images/1.jpg', dog:false},
+    {src:'images/2.jpg', dog:false},
+    {src:'images/3.jpg', dog:false},
+    {src:'images/4.jpg', dog:true},   // <- das "Hund"-Bild
+    {src:'images/5.jpg', dog:false},
+    {src:'images/6.jpg', dog:false},
+    {src:'images/7.jpg', dog:false},
+    {src:'images/8.jpg', dog:false},
+    {src:'images/9.jpg', dog:false}
+  ]
+};
+/* ================================================= */
+
+const $ = id => document.getElementById(id);
+const toast = t => { const e=$('toast'); e.textContent=t; e.style.display='block'; clearTimeout(toast.t); toast.t=setTimeout(()=>e.style.display='none',2600); };
+const params = new URLSearchParams(location.search);
+const FLOW = ['s0','s1','qu','s2','cookie','pw','s3','geo','mail','slider','s4','s5'];
+let cur = 's0';
+function next(){ show(FLOW[FLOW.indexOf(cur)+1]); }
+function show(id){
+  cur=id;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  $(id).classList.add('on');
+  scrollTo(0,0);
+  ({s1:startLoad,qu:startQueue,s2:startAgb,cookie:startCookie,pw:startPw,s3:startVideo,geo:startGeo,mail:startMail,slider:startSlider,s4:startCaptcha,s5:startFinale})[id]?.();
+}
+
+/* ---- 0: Popups ---- */
+const popups = [
+  {h:'🔥 EXKLUSIVES ANGEBOT 🔥', t:'Penisverlängerung', price:'nur 2,99 €', list:['✅ +15 cm in 3 Tagen','✅ Ohne Nebenwirkungen*','✅ *außer Stolz'], cta:'JETZT BESTELLEN', fail:'Leider ausverkauft. Zu hohe Nachfrage bei Männern wie dir. 😬'},
+  {h:'⚠️ WARTE! LETZTE CHANCE ⚠️', t:'Nur für dich: 50 % Rabatt', price:'nur 1,49 €', list:['✅ Diskrete Lieferung','✅ 30 Tage Geld-zurück','✅ Deine Freundin wird es merken'], cta:'RABATT SICHERN', fail:'Fehler 404: Größe nicht gefunden. 📏'}
+];
+let pi = 0;
+function showPopup(){
+  const p = popups[pi];
+  $('pop').innerHTML = `<button class="x" id="px">schließen</button><h2>${p.h}</h2><p><b>${p.t}</b></p><div class="price">${p.price}</div><p style="text-align:left">${p.list.join('<br>')}</p><button class="btn" id="pbuy">${p.cta}</button>`;
+  $('ov').classList.add('on');
+  $('pbuy').onclick = () => toast(p.fail);
+  $('px').onclick = () => {
+    $('ov').classList.remove('on');
+    pi++;
+    if (pi < popups.length) setTimeout(showPopup, 900);
+    else { toast('Weiterleitung…'); setTimeout(next, 2000); }
+  };
+}
+setTimeout(()=>{ if(cur==='s0') showPopup(); }, 3500);
+
+/* ---- 1: Ladebalken ---- */
+const loadMsgs = [[0,'Starte…'],[20,'Verbinde mit Server…'],[40,'Überprüfe Browser…'],[60,'Lade Sicherheitszertifikate…'],[80,'Fast fertig…'],[98,'Finalisiere… (das dauert normalerweise nicht so lange)']];
+const stuckMsgs = ['Bitte nicht die Seite schließen.','Server antwortet langsam…','Noch einen Moment…','Hamster werden neu gestartet 🐹','Wirklich gleich fertig. Versprochen.','Fast da… glaub ich.'];
+function startLoad(){
+  let p = 0, tick = 0, stuck = 0;
+  const upd = () => { $('pct').textContent = Math.floor(p)+'%'; $('barfill').style.width = p+'%'; };
+  const iv = setInterval(()=>{
+    if (p < 98) {
+      const band = Math.floor(p/20);
+      p = Math.min(98, p + 2.4 * Math.pow(0.5, band));
+      for (const [at,m] of loadMsgs) if (p>=at) $('lmsg').textContent = m;
+    } else {
+      stuck += 0.1;
+      if (Math.floor(stuck*10) % 100 === 0) $('lmsg').textContent = stuckMsgs[Math.floor(stuck/10) % stuckMsgs.length];
+      if (stuck >= CONFIG.stuckSeconds) {
+        clearInterval(iv); p = 99; upd();
+        setTimeout(()=>{ p=100; upd(); setTimeout(next, 700); }, 600);
+      }
+    }
+    upd();
+  }, 100);
+}
+
+/* ---- 2: AGB ---- */
+const agbText = [
+ ['§ 1 Geltungsbereich','Diese Bedingungen gelten für alles, was du jemals auf dieser Seite angeklickt hast, anklicken wirst oder anklicken wolltest.'],
+ ['§ 2 Datenschutz','Wir speichern nichts. Außer deinen Browserverlauf, deine Schuhgröße und wie oft du heimlich Kinderfilme guckst.'],
+ ['§ 3 Pflichten des Nutzers','Der Nutzer verpflichtet sich, mindestens einmal pro Woche ein Video hochzuladen und sich nicht länger von Ausreden wie „keine Zeit“ leiten zu lassen.'],
+ ['§ 4 Persönliche Bestätigung','Der Nutzer bestätigt hiermit rechtsverbindlich, ein Femboy zu sein. Ein Widerruf ist ausgeschlossen. Das Tragen von Thigh-Highs ist ab sofort Pflicht.'],
+ ['§ 5 Haftung','Wir haften nicht für entstandene Schäden, Peinlichkeit, Lachanfälle oder Freunde, die Screenshots machen.'],
+ ['§ 6 Rückgabe','Bereits abgegebene Würde kann nicht zurückerstattet werden.'],
+ ['§ 7 Weitergabe an Dritte','Der Nutzer erlaubt, dass sein Kumpel diese Seite beliebig oft herumzeigt.'],
+ ['§ 8 Schlussbestimmungen','Sollte eine dieser Bestimmungen unwirksam sein, bleiben die übrigen trotzdem peinlich.'],
+ ['§ 9 Kleingedrucktes','Du bist jetzt wirklich ganz unten angekommen. Gut gemacht. Setz den Haken.']
+];
+function startAgb(){
+  const box = $('agb');
+  box.innerHTML = agbText.map(([h,t])=>`<b>${h}</b>${t}`).join('') + '<p>&nbsp;</p>'.repeat(2);
+  const chk = $('agree'), btn = $('agbBtn');
+  const check = () => { if (box.scrollTop + box.clientHeight >= box.scrollHeight - 6) chk.disabled = false; };
+  box.onscroll = check; check();
+  chk.onchange = () => btn.disabled = !chk.checked;
+  btn.onclick = () => next();
+}
+
+/* ---- 3: Video ---- */
+function startVideo(){
+  $('vid').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${CONFIG.videoId}?autoplay=1&start=${CONFIG.videoStart}&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+  const btn = $('vidBtn'); let s = CONFIG.videoSeconds;
+  btn.disabled = true; btn.textContent = `Bitte warten… (${s})`;
+  const iv = setInterval(()=>{
+    s--;
+    if (s<=0){ clearInterval(iv); btn.disabled=false; btn.textContent='Ich bin ein Mensch. Weiter'; }
+    else btn.textContent = `Bitte warten… (${s})`;
+  },1000);
+  btn.onclick = () => { $('vid').innerHTML=''; next(); };
+}
+
+/* ---- 4: Captcha ---- */
+function startCaptcha(){
+  const grid = $('grid'); grid.innerHTML=''; $('err').textContent='';
+  const sel = new Set();
+  CONFIG.photos.forEach((ph,i)=>{
+    const b = document.createElement('button'); b.className='tile'; b.type='button';
+    const img = new Image(); img.src = ph.src; img.alt='';
+    img.onerror = () => { const d=document.createElement('div'); d.className='ph'; d.style.background=`hsl(${i*40},45%,60%)`; d.textContent = ph.dog ? '🐕' : ['🙂','😎','🤓','🧑','😄','🤔','😏','🥸','😐'][i%9]; img.replaceWith(d); };
+    b.appendChild(img);
+    b.onclick = () => { sel.has(i) ? sel.delete(i) : sel.add(i); b.classList.toggle('sel'); };
+    grid.appendChild(b);
+  });
+  $('capBtn').onclick = () => {
+    const ok = CONFIG.photos.every((ph,i)=> ph.dog === sel.has(i));
+    if (ok) next();
+    else {
+      $('err').textContent = 'Falsch. Bist du sicher, dass du ein Mensch bist? 🤖';
+      const c=$('cap'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+      sel.clear(); grid.querySelectorAll('.tile').forEach(t=>t.classList.remove('sel'));
+    }
+  };
+}
+
+/* ---- 5: Finale ---- */
+function startFinale(){
+  const em = ['🎉','⭐','🏆','▶️','✨','🔔'];
+  for (let i=0;i<40;i++) setTimeout(()=>{
+    const e=document.createElement('div'); e.className='fall'; e.textContent=em[i%em.length];
+    e.style.left=Math.random()*95+'vw'; e.style.animationDuration=(3+Math.random()*3)+'s';
+    document.body.appendChild(e); setTimeout(()=>e.remove(),6500);
+  }, i*120);
+  $('claim').onclick = () => {
+    $('claim').style.display='none';
+    const e=$('end'); e.style.display='block';
+    e.innerHTML = 'Der Playbutton liegt bereit und wartet auf dich. Zeit, dass du wieder Videos hochlädst. 😄<br><br><b>Alles Gute zum Geburtstag, Arthur! 🎂</b>';
+  };
+}
+
+/* ---- Neue Checks ---- */
+const SKIP = params.has('skip');
+
+/* Warteschlange */
+function startQueue(){
+  let pos = 847; const el=$('qpos'), msg=$('qmsg');
+  const finish=()=>{ msg.textContent='Du bist dran!'; setTimeout(()=>cur==='qu'&&next(),1200); };
+  $('qskip').onclick=()=>toast('Zahlung abgelehnt: Dein Guthaben beträgt 0,00 €. 💸');
+  if (SKIP){ el.textContent=1; return setTimeout(finish,800); }
+  const tick=()=>{
+    if(cur!=='qu') return;
+    el.textContent=pos;
+    if(pos<=1) return finish();
+    let d;
+    if(pos>100){ pos=Math.max(100,pos-(3+Math.floor(Math.random()*7))); d=70; }
+    else if(pos>12){ d=80+(100-pos)*8; pos--; }
+    else { d=1500; pos--; }
+    if(pos===12) msg.textContent='Fast geschafft… oder auch nicht.';
+    setTimeout(tick,d);
+  };
+  tick();
+}
+
+/* Cookie-Banner */
+const COOKIES=['Notwendige Cookies','Funktionale Cookies','Analyse-Cookies','Marketing-Cookies','Cookies von Cookies','Personalisierte Werbung für Penisverlängerung','Dein Standort','Dein Browserverlauf','Deine Schuhgröße','Deine Lieblingsfarbe'];
+function startCookie(){
+  const box=$('cklist'); box.innerHTML='';
+  COOKIES.forEach(t=>{ const l=document.createElement('label'); l.className='chk'; l.innerHTML=`<input type="checkbox" checked><span>${t}</span>`; box.appendChild(l); });
+  const save=$('ckSave'); let tries=0; save.style.transform='';
+  $('ckAll').onclick=()=>toast('Fehler: Bitte lehne jede Kategorie einzeln ab.');
+  save.onclick=()=>{
+    const on=box.querySelectorAll('input:checked').length;
+    if(on){ toast(`Noch ${on} Einstellung${on>1?'en':''} aktiv. 🍪`); return; }
+    if(tries<3){ tries++; save.style.transform=`translate(${(Math.random()-.5)*120}px,${(Math.random()-.5)*50}px)`; toast('Oops, der Button ist weggerutscht. 🙈'); return; }
+    next();
+  };
+}
+
+/* Passwort mit absurden Regeln */
+const PW_RULES=[
+ ['Mindestens 12 Zeichen',v=>v.length>=12],
+ ['Mindestens ein Großbuchstabe',v=>/[A-ZÄÖÜ]/.test(v)],
+ ['Mindestens eine Zahl',v=>/\d/.test(v)],
+ ['Mindestens ein Sonderzeichen (!?#$%&*)',v=>/[!?#$%&*]/.test(v)],
+ ['Muss ein Emoji enthalten',v=>/\p{Extended_Pictographic}/u.test(v)],
+ ['Muss deinen Namen rückwärts enthalten (ruhtra)',v=>/ruhtra/i.test(v)],
+ ['Die Quersumme aller Ziffern muss genau 17 sein',v=>[...v].filter(c=>/\d/.test(c)).reduce((a,c)=>a+ +c,0)===17],
+ ['Darf nicht "123" enthalten',v=>!v.includes('123')]
+];
+function startPw(){
+  const inp=$('pwin'), list=$('pwrules'), btn=$('pwBtn');
+  const upd=()=>{
+    const v=inp.value; let html='', all=true;
+    for(const [t,f] of PW_RULES){ const ok=f(v); html+=`<div class="${ok?'ok':''}">${ok?'✅':'❌'} ${t}</div>`; if(!ok){all=false;break;} }
+    list.innerHTML=html; btn.disabled=!all;
+  };
+  inp.oninput=upd; upd();
+  btn.onclick=()=>next();
+}
+
+/* Geo-Check: tausche emoji/src/opts/ok gegen echte Fotos und Antworten aus */
+const GEO=[
+ {src:'images/geo1.jpg',emoji:'🏔️',opts:['In den Alpen','Hamburger Hafen','Im Zimmer von Arthur','Auf dem Mond'],ok:0},
+ {src:'images/geo2.jpg',emoji:'🏖️',opts:['Ostsee','Mallorca','Im Badezimmer','Atlantis'],ok:1},
+ {src:'images/geo3.jpg',emoji:'🏙️',opts:['New York','Gelsenkirchen','Tokio','Minecraft'],ok:3}
+];
+function startGeo(){
+  let r=0;
+  const draw=()=>{
+    const g=GEO[r];
+    $('georound').textContent=`(Runde ${r+1} von ${GEO.length})`;
+    const box=$('geoimg'); box.innerHTML='';
+    const im=new Image(); im.src=g.src; im.alt='';
+    im.onerror=()=>{ const d=document.createElement('div'); d.className='ph'; d.textContent=g.emoji; im.replaceWith(d); };
+    box.appendChild(im);
+    const o=$('geoopts'); o.innerHTML='';
+    g.opts.forEach((t,i)=>{
+      const b=document.createElement('button'); b.className='opt'; b.textContent=t;
+      b.onclick=()=>{
+        if(i===g.ok){ r++; if(r>=GEO.length) return next(); toast(`Richtig! Aber das war erst Runde ${r}. 😈`); draw(); }
+        else toast(`Falsch. Du lagst ${Math.floor(Math.random()*9000+500)} km daneben.`);
+      };
+      o.appendChild(b);
+    });
+  };
+  draw();
+}
+
+/* E-Mail-Code, der schnell verschwindet und abläuft */
+function startMail(){
+  const ban=$('ban'), inp=$('mailin'), info=$('mailinfo'); inp.value='';
+  let code='', left=0;
+  const send=()=>{
+    code=String(Math.floor(100000+Math.random()*900000)); left=SKIP?60:15;
+    ban.textContent='📧 Dein Code: '+code; ban.style.display='block';
+    setTimeout(()=>{ban.style.display='none'}, SKIP?20000:4000);
+  };
+  setTimeout(()=>{ if(cur==='mail') send(); },3000);
+  const iv=setInterval(()=>{
+    if(cur!=='mail'){ clearInterval(iv); ban.style.display='none'; return; }
+    if(!code){ info.textContent='Code wird gesendet…'; return; }
+    left--; info.textContent=`Code läuft ab in ${left} s`;
+    if(left<=0){ toast('Code abgelaufen. Neuer Code unterwegs…'); code=''; setTimeout(()=>{ if(cur==='mail') send(); },2500); }
+  },1000);
+  $('mailBtn').onclick=()=>{
+    if(code && inp.value.trim()===code){ clearInterval(iv); ban.style.display='none'; next(); }
+    else toast('Falscher Code. 📧');
+  };
+}
+
+/* Regler auf exakten Wert */
+function startSlider(){
+  const T=[73,42,69]; let r=0;
+  const rng=$('rng'), val=$('rngval'), tx=$('rngtxt');
+  const set=()=>{ tx.textContent=`Stelle den Regler auf exakt ${T[r]}.`; rng.value=Math.floor(Math.random()*100); val.textContent=rng.value; };
+  rng.oninput=()=>val.textContent=rng.value;
+  $('rngBtn').onclick=()=>{
+    if(+rng.value===T[r]){ r++; if(r>=T.length) return next(); toast(`Geschafft. Noch ${T.length-r} Runde${T.length-r>1?'n':''}. 😇`); set(); }
+    else toast(`Das ist ${rng.value}. Nicht ${T[r]}. 🧐`);
+  };
+  set();
+}
+
+/* Zum Testen: ?stage=pw springt direkt zu einer Stufe (s0,s1,qu,s2,cookie,pw,s3,geo,mail,slider,s4,s5), ?skip verkürzt das Warten */
+if (params.has('skip')) { CONFIG.stuckSeconds = 3; CONFIG.videoSeconds = 3; }
+if (params.has('stage')) show(params.get('stage'));
+</script>
+</body>
+</html>
