@@ -76,6 +76,9 @@ label.chk input{width:22px;height:22px;flex:none}
 .ck .chk{margin:6px 0}
 input[type=range]{width:100%;max-width:380px;margin:18px 0}
 @media (prefers-reduced-motion:reduce){.pop,.play,.spin{animation:none}}
+.permission{width:min(380px,calc(100% - 36px));border:1px solid #ccc;border-radius:12px;padding:20px;color:#222}
+.permission::backdrop{background:rgba(0,0,0,.55)}
+.permission form{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-top:16px}
 </style>
 </head>
 <body>
@@ -182,6 +185,15 @@ input[type=range]{width:100%;max-width:380px;margin:18px 0}
   <button class="btn" id="rngBtn">Bestätigen</button>
 </section>
 
+<dialog class="permission" id="permission" aria-labelledby="permissionTitle" aria-describedby="permissionText">
+  <h1 id="permissionTitle">Berechtigungsanfrage</h1>
+  <p id="permissionText"></p>
+  <form method="dialog">
+    <button autofocus>Nicht erlauben</button>
+    <button class="btn">Erlauben</button>
+  </form>
+</dialog>
+
 <div class="ban" id="ban"></div>
 <div class="toast" id="toast"></div>
 
@@ -212,6 +224,9 @@ const $ = id => document.getElementById(id);
 const toast = t => { const e=$('toast'); e.textContent=t; e.style.display='block'; clearTimeout(toast.t); toast.t=setTimeout(()=>e.style.display='none',2600); };
 const params = new URLSearchParams(location.search);
 const FLOW = ['s0','s1','qu','s2','cookie','pw','s3','mail','slider','s4','s5'];
+const permissionStages = ['s2','cookie','pw'];
+const permissionStage = permissionStages[Math.floor(Math.random() * permissionStages.length)];
+let permissionShown = false;
 let cur = 's0';
 function next(){ show(FLOW[FLOW.indexOf(cur)+1]); }
 function show(id){
@@ -220,6 +235,27 @@ function show(id){
   $(id).classList.add('on');
   scrollTo(0,0);
   ({s1:startLoad,qu:startQueue,s2:startAgb,cookie:startCookie,pw:startPw,s3:startVideo,mail:startMail,slider:startSlider,s4:startCaptcha,s5:startFinale})[id]?.();
+  if (id === permissionStage && !permissionShown) showPermissions();
+}
+
+function showPermissions(){
+  permissionShown = true;
+  const dialog = $('permission');
+  const requests = [
+    'Darf diese Seite auf deine Kamera zugreifen?',
+    'Darf diese Seite auf dein Mikrofon zugreifen?',
+    'Darf diese Seite deinen Standort abrufen?'
+  ];
+  let index = 0;
+  const showRequest = () => {
+    $('permissionText').textContent = requests[index];
+    dialog.showModal();
+  };
+  dialog.onclose = () => {
+    index++;
+    if (index < requests.length) showRequest();
+  };
+  showRequest();
 }
 
 /* ---- 0: Popups ---- */
