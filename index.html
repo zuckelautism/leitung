@@ -68,12 +68,9 @@ label.chk input{width:22px;height:22px;flex:none}
 .gold{background:#e0a800;color:#000;font-size:1.1rem}
 .fall{position:fixed;top:-40px;font-size:1.6rem;animation:fall linear forwards;pointer-events:none}
 @keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
-.opt{display:block;width:100%;max-width:380px;margin:6px auto;background:#fff;border:1px solid #ccc;color:#222}
 .rl{text-align:left;max-width:380px;width:100%;margin:10px auto;font-size:.9rem;line-height:1.7}
 .ok{color:#0a8a0a}
 .txt{width:100%;max-width:380px;font:inherit;padding:12px;border:1px solid #aaa;border-radius:8px;text-align:center}
-.geo{width:100%;max-width:380px;aspect-ratio:4/3;background:#ddd;border-radius:8px;overflow:hidden;margin:10px auto}
-.geo img,.geo .ph{width:100%;height:100%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:4.5rem}
 .ban{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:12px 16px;border-radius:10px;z-index:30;display:none;font-weight:600}
 .ck{background:#fff;border:1px solid #ccc;border-radius:10px;padding:14px;max-width:420px;width:100%;text-align:left}
 .ck .chk{margin:6px 0}
@@ -167,14 +164,6 @@ input[type=range]{width:100%;max-width:380px;margin:18px 0}
   <button class="btn" id="pwBtn" disabled>Passwort speichern</button>
 </section>
 
-<!-- Geo-Check -->
-<section class="screen" id="geo">
-  <h1>Geo-Check</h1>
-  <p>Wo wurde dieses Foto aufgenommen? <span class="small" id="georound"></span></p>
-  <div class="geo" id="geoimg"></div>
-  <div id="geoopts" style="width:100%"></div>
-</section>
-
 <!-- E-Mail-Code -->
 <section class="screen" id="mail">
   <h1>E-Mail bestätigen</h1>
@@ -222,7 +211,7 @@ const CONFIG = {
 const $ = id => document.getElementById(id);
 const toast = t => { const e=$('toast'); e.textContent=t; e.style.display='block'; clearTimeout(toast.t); toast.t=setTimeout(()=>e.style.display='none',2600); };
 const params = new URLSearchParams(location.search);
-const FLOW = ['s0','s1','qu','s2','cookie','pw','s3','geo','mail','slider','s4','s5'];
+const FLOW = ['s0','s1','qu','s2','cookie','pw','s3','mail','slider','s4','s5'];
 let cur = 's0';
 function next(){ show(FLOW[FLOW.indexOf(cur)+1]); }
 function show(id){
@@ -230,7 +219,7 @@ function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
   $(id).classList.add('on');
   scrollTo(0,0);
-  ({s1:startLoad,qu:startQueue,s2:startAgb,cookie:startCookie,pw:startPw,s3:startVideo,geo:startGeo,mail:startMail,slider:startSlider,s4:startCaptcha,s5:startFinale})[id]?.();
+  ({s1:startLoad,qu:startQueue,s2:startAgb,cookie:startCookie,pw:startPw,s3:startVideo,mail:startMail,slider:startSlider,s4:startCaptcha,s5:startFinale})[id]?.();
 }
 
 /* ---- 0: Popups ---- */
@@ -409,34 +398,6 @@ function startPw(){
   btn.onclick=()=>next();
 }
 
-/* Geo-Check: tausche emoji/src/opts/ok gegen echte Fotos und Antworten aus */
-const GEO=[
- {src:'images/geo1.jpg',emoji:'🏔️',opts:['In den Alpen','Hamburger Hafen','Im Zimmer von Arthur','Auf dem Mond'],ok:0},
- {src:'images/geo2.jpg',emoji:'🏖️',opts:['Ostsee','Mallorca','Im Badezimmer','Atlantis'],ok:1},
- {src:'images/geo3.jpg',emoji:'🏙️',opts:['New York','Gelsenkirchen','Tokio','Minecraft'],ok:3}
-];
-function startGeo(){
-  let r=0;
-  const draw=()=>{
-    const g=GEO[r];
-    $('georound').textContent=`(Runde ${r+1} von ${GEO.length})`;
-    const box=$('geoimg'); box.innerHTML='';
-    const im=new Image(); im.src=g.src; im.alt='';
-    im.onerror=()=>{ const d=document.createElement('div'); d.className='ph'; d.textContent=g.emoji; im.replaceWith(d); };
-    box.appendChild(im);
-    const o=$('geoopts'); o.innerHTML='';
-    g.opts.forEach((t,i)=>{
-      const b=document.createElement('button'); b.className='opt'; b.textContent=t;
-      b.onclick=()=>{
-        if(i===g.ok){ r++; if(r>=GEO.length) return next(); toast(`Richtig! Aber das war erst Runde ${r}. 😈`); draw(); }
-        else toast(`Falsch. Du lagst ${Math.floor(Math.random()*9000+500)} km daneben.`);
-      };
-      o.appendChild(b);
-    });
-  };
-  draw();
-}
-
 /* E-Mail-Code, der schnell verschwindet und abläuft */
 function startMail(){
   const ban=$('ban'), inp=$('mailin'), info=$('mailinfo'); inp.value='';
@@ -472,9 +433,11 @@ function startSlider(){
   set();
 }
 
-/* Zum Testen: ?stage=pw springt direkt zu einer Stufe (s0,s1,qu,s2,cookie,pw,s3,geo,mail,slider,s4,s5), ?skip verkürzt das Warten */
+/* Zum Testen: ?stage=pw springt direkt zu einer Stufe (s0,s1,qu,s2,cookie,pw,s3,mail,slider,s4,s5), ?skip verkürzt das Warten */
 if (params.has('skip')) { CONFIG.stuckSeconds = 3; CONFIG.videoSeconds = 3; }
-if (params.has('stage')) show(params.get('stage'));
+const stage = params.get('stage');
+if (stage === 'geo') show('mail');
+else if (FLOW.includes(stage)) show(stage);
 </script>
 </body>
 </html>
