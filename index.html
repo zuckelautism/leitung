@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Überprüfung läuft…</title>
+<title>Verbindungsprüfung</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#f4f4f4;color:#222}
@@ -82,11 +82,11 @@ input[type=range]{width:100%;max-width:380px;margin:18px 0}
 
 <!-- 0: Fake-Weiterleitung -->
 <section class="screen on" id="s0">
-  <h1>Einen Moment bitte…</h1>
-  <p>Wir überprüfen, ob deine Verbindung sicher ist.</p>
+  <h1>Verbindung wird geprüft</h1>
+  <p>Die Prüfung startet automatisch.</p>
   <div class="spin"></div>
-  <p class="small">Dieser Vorgang dauert nur wenige Sekunden.</p>
-  <p class="cf">Leistung &amp; Sicherheit durch <b>Cloudfake</b> · Ray ID: 8f3a9c21d7e4b650</p>
+  <p class="small">Bitte lass diese Seite geöffnet.</p>
+  <p class="cf">Vorgangsnummer: 8f3a9c21d7e4b650</p>
 </section>
 <div class="ov" id="ov"><div class="pop" id="pop"></div></div>
 
@@ -95,22 +95,22 @@ input[type=range]{width:100%;max-width:380px;margin:18px 0}
   <h1>Verbindung wird hergestellt…</h1>
   <div id="pct">0%</div>
   <div class="bar"><i id="barfill"></i></div>
-  <p id="lmsg" class="small">Starte…</p>
+  <p id="lmsg" class="small">Verbindung wird vorbereitet…</p>
 </section>
 
 <!-- 2: AGB -->
 <section class="screen" id="s2">
   <h1>Nutzungsbedingungen</h1>
-  <p class="small">Bitte lies alles bis zum Ende durch. Wir merken, wenn du nur scrollst.</p>
+  <p class="small">Scrolle bis zum Ende, um die Bedingungen zu bestätigen.</p>
   <div class="agb" id="agb"></div>
-  <label class="chk"><input type="checkbox" id="agree" disabled><span>Ich habe alles sorgfältig gelesen und akzeptiere die Bedingungen.</span></label>
+  <label class="chk"><input type="checkbox" id="agree" disabled><span>Ich habe die Bedingungen gelesen und akzeptiere sie.</span></label>
   <button class="btn" id="agbBtn" disabled>Akzeptieren &amp; weiter</button>
 </section>
 
 <!-- 3: Video -->
 <section class="screen" id="s3">
   <h1>Sicherheitsüberprüfung</h1>
-  <p>Schau dir das Video komplett an, um zu beweisen, dass du ein Mensch bist.</p>
+  <p>Der Button wird nach der kurzen Wartezeit freigeschaltet.</p>
   <div class="vid" id="vid"></div>
   <button class="btn" id="vidBtn" disabled>Weiter</button>
 </section>
@@ -118,7 +118,7 @@ input[type=range]{width:100%;max-width:380px;margin:18px 0}
 <!-- 4: Captcha -->
 <section class="screen" id="s4">
   <div class="cap" id="cap">
-    <div class="hd"><small>Wähle alle Bilder mit</small><b>Hunden</b><small>Wenn nichts übrig ist, bestätige.</small></div>
+    <div class="hd"><small>Wähle alle Bilder mit</small><b>Hunden</b><small>Bestätige anschließend deine Auswahl.</small></div>
     <div class="grid" id="grid"></div>
     <div class="err" id="err"></div>
     <div class="ft"><span class="small">Ich bin kein Roboter</span><button class="btn" id="capBtn">Bestätigen</button></div>
@@ -127,17 +127,17 @@ input[type=range]{width:100%;max-width:380px;margin:18px 0}
 
 <!-- 5: Finale -->
 <section class="screen" id="s5">
-  <h1>Glückwunsch! 🎉</h1>
-  <p>Dein exklusiver YouTube-Playbutton ist bereit zur Abholung!</p>
+  <h1>Überprüfung abgeschlossen</h1>
+  <p>Dein Playbutton ist bereit.</p>
   <div class="play">▶</div>
-  <button class="gold" id="claim">Jetzt abholen</button>
+  <button class="gold" id="claim">Playbutton abholen</button>
   <p id="end" class="small" style="display:none;font-size:1rem;color:#fff;max-width:420px"></p>
 </section>
 
 <!-- Warteschlange -->
 <section class="screen" id="qu">
-  <h1>Du bist in der Warteschlange</h1>
-  <p>Aufgrund hoher Nachfrage bitten wir um etwas Geduld.</p>
+  <h1>Warteschlange</h1>
+  <p>Sobald du an der Reihe bist, geht es automatisch weiter.</p>
   <div id="qpos" style="font-size:3.8rem;font-weight:800;font-variant-numeric:tabular-nums">847</div>
   <p class="small" id="qmsg">Position in der Warteschlange</p>
   <button class="btn" id="qskip">Warteschlange überspringen (4,99 €)</button>
@@ -146,8 +146,8 @@ input[type=range]{width:100%;max-width:380px;margin:18px 0}
 <!-- Cookies -->
 <section class="screen" id="cookie">
   <div class="ck">
-    <h1 style="font-size:1.25rem">🍪 Wir respektieren deine Privatsphäre</h1>
-    <p class="small">Bitte deaktiviere alle Einstellungen, die du nicht möchtest.</p>
+    <h1 style="font-size:1.25rem">Cookie-Einstellungen</h1>
+    <p class="small">Deaktiviere die Kategorien einzeln und speichere deine Auswahl.</p>
     <div id="cklist"></div>
     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
       <button class="btn" id="ckAll" style="background:#888">Alle ablehnen</button>
@@ -158,24 +158,24 @@ input[type=range]{width:100%;max-width:380px;margin:18px 0}
 
 <!-- Passwort -->
 <section class="screen" id="pw">
-  <h1>Erstelle ein sicheres Passwort</h1>
-  <input class="txt" id="pwin" type="text" autocomplete="off" autocapitalize="off" placeholder="Passwort">
+  <h1>Spielpasswort festlegen</h1>
+  <input class="txt" id="pwin" type="text" autocomplete="off" autocapitalize="off" placeholder="Spielpasswort">
   <div class="rl" id="pwrules"></div>
-  <button class="btn" id="pwBtn" disabled>Passwort speichern</button>
+  <button class="btn" id="pwBtn" disabled>Weiter</button>
 </section>
 
 <!-- E-Mail-Code -->
 <section class="screen" id="mail">
   <h1>E-Mail bestätigen</h1>
-  <p>Wir haben dir einen 6-stelligen Code geschickt. Gib ihn hier ein.</p>
+  <p>Gib den sechsstelligen Code ein, sobald er oben auf der Seite erscheint.</p>
   <input class="txt" id="mailin" inputmode="numeric" maxlength="6" placeholder="000000">
-  <p class="small" id="mailinfo">Code wird gesendet…</p>
+  <p class="small" id="mailinfo">Code wird vorbereitet…</p>
   <button class="btn" id="mailBtn">Bestätigen</button>
 </section>
 
 <!-- Regler -->
 <section class="screen" id="slider">
-  <h1>Letzter Check (wirklich)</h1>
+  <h1>Regler einstellen</h1>
   <p id="rngtxt"></p>
   <div style="font-size:2.5rem;font-weight:800" id="rngval">0</div>
   <input type="range" id="rng" min="0" max="100" step="1" value="0">
@@ -224,8 +224,8 @@ function show(id){
 
 /* ---- 0: Popups ---- */
 const popups = [
-  {h:'🔥 EXKLUSIVES ANGEBOT 🔥', t:'Penisverlängerung', price:'nur 2,99 €', list:['✅ +15 cm in 3 Tagen','✅ Ohne Nebenwirkungen*','✅ *außer Stolz'], cta:'JETZT BESTELLEN', fail:'Leider ausverkauft. Zu hohe Nachfrage bei Männern wie dir. 😬'},
-  {h:'⚠️ WARTE! LETZTE CHANCE ⚠️', t:'Nur für dich: 50 % Rabatt', price:'nur 1,49 €', list:['✅ Diskrete Lieferung','✅ 30 Tage Geld-zurück','✅ Deine Freundin wird es merken'], cta:'RABATT SICHERN', fail:'Fehler 404: Größe nicht gefunden. 📏'}
+  {h:'Zusatzoption', t:'Priorisierte Bearbeitung', price:'2,99 €', list:['Einmalige Gebühr','Gilt für diesen Vorgang'], cta:'Option auswählen', fail:'Diese Option ist derzeit nicht verfügbar.'},
+  {h:'Alternatives Angebot', t:'Priorisierte Bearbeitung zum reduzierten Preis', price:'1,49 €', list:['Einmalige Gebühr','Gilt für diesen Vorgang'], cta:'Angebot auswählen', fail:'Das Angebot ist abgelaufen.'}
 ];
 let pi = 0;
 function showPopup(){
@@ -243,8 +243,8 @@ function showPopup(){
 setTimeout(()=>{ if(cur==='s0') showPopup(); }, 3500);
 
 /* ---- 1: Ladebalken ---- */
-const loadMsgs = [[0,'Starte…'],[20,'Verbinde mit Server…'],[40,'Überprüfe Browser…'],[60,'Lade Sicherheitszertifikate…'],[80,'Fast fertig…'],[98,'Finalisiere… (das dauert normalerweise nicht so lange)']];
-const stuckMsgs = ['Bitte nicht die Seite schließen.','Server antwortet langsam…','Noch einen Moment…','Hamster werden neu gestartet 🐹','Wirklich gleich fertig. Versprochen.','Fast da… glaub ich.'];
+const loadMsgs = [[0,'Verbindung wird vorbereitet…'],[20,'Verbindung zum Server wird aufgebaut…'],[40,'Browser wird geprüft…'],[60,'Sicherheitsprüfung läuft…'],[80,'Prüfung wird abgeschlossen…'],[98,'Warte auf die Bestätigung des Servers…']];
+const stuckMsgs = ['Bitte lass diese Seite geöffnet.','Die Antwort des Servers verzögert sich.','Die Verbindung bleibt geöffnet.','Der Server verarbeitet die Anfrage noch.','Die Bestätigung steht noch aus.','Die Anfrage ist weiterhin in Bearbeitung.'];
 function startLoad(){
   let p = 0, tick = 0, stuck = 0;
   const upd = () => { $('pct').textContent = Math.floor(p)+'%'; $('barfill').style.width = p+'%'; };
@@ -267,15 +267,15 @@ function startLoad(){
 
 /* ---- 2: AGB ---- */
 const agbText = [
- ['§ 1 Geltungsbereich','Diese Bedingungen gelten für alles, was du jemals auf dieser Seite angeklickt hast, anklicken wirst oder anklicken wolltest.'],
- ['§ 2 Datenschutz','Wir speichern nichts. Außer deinen Browserverlauf, deine Schuhgröße und wie oft du heimlich Kinderfilme guckst.'],
- ['§ 3 Pflichten des Nutzers','Der Nutzer verpflichtet sich, mindestens einmal pro Woche ein Video hochzuladen und sich nicht länger von Ausreden wie „keine Zeit“ leiten zu lassen.'],
- ['§ 4 Persönliche Bestätigung','Der Nutzer bestätigt hiermit rechtsverbindlich, ein Femboy zu sein. Ein Widerruf ist ausgeschlossen. Das Tragen von Thigh-Highs ist ab sofort Pflicht.'],
- ['§ 5 Haftung','Wir haften nicht für entstandene Schäden, Peinlichkeit, Lachanfälle oder Freunde, die Screenshots machen.'],
- ['§ 6 Rückgabe','Bereits abgegebene Würde kann nicht zurückerstattet werden.'],
- ['§ 7 Weitergabe an Dritte','Der Nutzer erlaubt, dass sein Kumpel diese Seite beliebig oft herumzeigt.'],
- ['§ 8 Schlussbestimmungen','Sollte eine dieser Bestimmungen unwirksam sein, bleiben die übrigen trotzdem peinlich.'],
- ['§ 9 Kleingedrucktes','Du bist jetzt wirklich ganz unten angekommen. Gut gemacht. Setz den Haken.']
+ ['§ 1 Geltungsbereich','Diese Hinweise gelten für den Ablauf auf dieser Seite und die darin enthaltenen Aufgaben.'],
+ ['§ 2 Eingaben','Verwende für die Aufgaben ausschließlich frei erfundene Angaben.'],
+ ['§ 3 Teilnahme','Die einzelnen Aufgaben werden in der angezeigten Reihenfolge freigeschaltet.'],
+ ['§ 4 Zeitlimits','Bei einzelnen Aufgaben gelten Wartezeiten oder zeitlich begrenzte Bestätigungscodes.'],
+ ['§ 5 Zahlungen','Die angezeigten Kaufoptionen gehören zum Spiel. Es entstehen keine Kosten.'],
+ ['§ 6 Unterbrechung','Wenn du die Seite neu lädst, beginnt der Ablauf von vorn.'],
+ ['§ 7 Externe Inhalte','Ein Abschnitt enthält ein eingebettetes Video von YouTube.'],
+ ['§ 8 Abschluss','Nach der letzten Aufgabe kannst du den Playbutton abholen.'],
+ ['§ 9 Bestätigung','Bestätige die Hinweise, um zur nächsten Aufgabe zu gelangen.']
 ];
 function startAgb(){
   const box = $('agb');
@@ -294,7 +294,7 @@ function startVideo(){
   btn.disabled = true; btn.textContent = `Bitte warten… (${s})`;
   const iv = setInterval(()=>{
     s--;
-    if (s<=0){ clearInterval(iv); btn.disabled=false; btn.textContent='Ich bin ein Mensch. Weiter'; }
+    if (s<=0){ clearInterval(iv); btn.disabled=false; btn.textContent='Weiter'; }
     else btn.textContent = `Bitte warten… (${s})`;
   },1000);
   btn.onclick = () => { $('vid').innerHTML=''; next(); };
@@ -316,7 +316,7 @@ function startCaptcha(){
     const ok = CONFIG.photos.every((ph,i)=> ph.dog === sel.has(i));
     if (ok) next();
     else {
-      $('err').textContent = 'Falsch. Bist du sicher, dass du ein Mensch bist? 🤖';
+      $('err').textContent = 'Die Auswahl war nicht korrekt. Bitte versuche es erneut.';
       const c=$('cap'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
       sel.clear(); grid.querySelectorAll('.tile').forEach(t=>t.classList.remove('sel'));
     }
@@ -334,7 +334,7 @@ function startFinale(){
   $('claim').onclick = () => {
     $('claim').style.display='none';
     const e=$('end'); e.style.display='block';
-    e.innerHTML = 'Der Playbutton liegt bereit und wartet auf dich. Zeit, dass du wieder Videos hochlädst. 😄<br><br><b>Alles Gute zum Geburtstag, Arthur! 🎂</b>';
+    e.innerHTML = '<b>Alles Gute zum Geburtstag, Arthur!</b><br>Der Playbutton ist für dich. Wir freuen uns auf dein nächstes Video.';
   };
 }
 
@@ -344,8 +344,8 @@ const SKIP = params.has('skip');
 /* Warteschlange */
 function startQueue(){
   let pos = 847; const el=$('qpos'), msg=$('qmsg');
-  const finish=()=>{ msg.textContent='Du bist dran!'; setTimeout(()=>cur==='qu'&&next(),1200); };
-  $('qskip').onclick=()=>toast('Zahlung abgelehnt: Dein Guthaben beträgt 0,00 €. 💸');
+  const finish=()=>{ msg.textContent='Du bist an der Reihe.'; setTimeout(()=>cur==='qu'&&next(),1200); };
+  $('qskip').onclick=()=>toast('Die Zahlung wurde abgelehnt. Du behältst deinen Platz in der Warteschlange.');
   if (SKIP){ el.textContent=1; return setTimeout(finish,800); }
   const tick=()=>{
     if(cur!=='qu') return;
@@ -355,23 +355,23 @@ function startQueue(){
     if(pos>100){ pos=Math.max(100,pos-(3+Math.floor(Math.random()*7))); d=70; }
     else if(pos>12){ d=80+(100-pos)*8; pos--; }
     else { d=1500; pos--; }
-    if(pos===12) msg.textContent='Fast geschafft… oder auch nicht.';
+    if(pos===12) msg.textContent='Du rückst in der Warteschlange vor.';
     setTimeout(tick,d);
   };
   tick();
 }
 
 /* Cookie-Banner */
-const COOKIES=['Notwendige Cookies','Funktionale Cookies','Analyse-Cookies','Marketing-Cookies','Cookies von Cookies','Personalisierte Werbung für Penisverlängerung','Dein Standort','Dein Browserverlauf','Deine Schuhgröße','Deine Lieblingsfarbe'];
+const COOKIES=['Notwendige Cookies','Funktionale Cookies','Analyse-Cookies','Marketing-Cookies','Sitzungsdaten','Personalisierte Werbung','Standortdaten','Nutzungsverlauf','Geräteinformationen','Anzeigeeinstellungen'];
 function startCookie(){
   const box=$('cklist'); box.innerHTML='';
   COOKIES.forEach(t=>{ const l=document.createElement('label'); l.className='chk'; l.innerHTML=`<input type="checkbox" checked><span>${t}</span>`; box.appendChild(l); });
   const save=$('ckSave'); let tries=0; save.style.transform='';
-  $('ckAll').onclick=()=>toast('Fehler: Bitte lehne jede Kategorie einzeln ab.');
+  $('ckAll').onclick=()=>toast('Bitte deaktiviere die Kategorien einzeln.');
   save.onclick=()=>{
     const on=box.querySelectorAll('input:checked').length;
-    if(on){ toast(`Noch ${on} Einstellung${on>1?'en':''} aktiv. 🍪`); return; }
-    if(tries<3){ tries++; save.style.transform=`translate(${(Math.random()-.5)*120}px,${(Math.random()-.5)*50}px)`; toast('Oops, der Button ist weggerutscht. 🙈'); return; }
+    if(on){ toast(`Noch ${on} Einstellung${on>1?'en':''} aktiv.`); return; }
+    if(tries<3){ tries++; save.style.transform=`translate(${(Math.random()-.5)*120}px,${(Math.random()-.5)*50}px)`; toast('Speichern fehlgeschlagen. Bitte erneut versuchen.'); return; }
     next();
   };
 }
@@ -383,7 +383,7 @@ const PW_RULES=[
  ['Mindestens eine Zahl',v=>/\d/.test(v)],
  ['Mindestens ein Sonderzeichen (!?#$%&*)',v=>/[!?#$%&*]/.test(v)],
  ['Muss ein Emoji enthalten',v=>/\p{Extended_Pictographic}/u.test(v)],
- ['Muss deinen Namen rückwärts enthalten (ruhtra)',v=>/ruhtra/i.test(v)],
+ ['Muss „ruhtra“ enthalten (Arthur rückwärts)',v=>/ruhtra/i.test(v)],
  ['Die Quersumme aller Ziffern muss genau 17 sein',v=>[...v].filter(c=>/\d/.test(c)).reduce((a,c)=>a+ +c,0)===17],
  ['Darf nicht "123" enthalten',v=>!v.includes('123')]
 ];
@@ -404,19 +404,19 @@ function startMail(){
   let code='', left=0;
   const send=()=>{
     code=String(Math.floor(100000+Math.random()*900000)); left=SKIP?60:15;
-    ban.textContent='📧 Dein Code: '+code; ban.style.display='block';
+    ban.textContent='Bestätigungscode: '+code; ban.style.display='block';
     setTimeout(()=>{ban.style.display='none'}, SKIP?20000:4000);
   };
   setTimeout(()=>{ if(cur==='mail') send(); },3000);
   const iv=setInterval(()=>{
     if(cur!=='mail'){ clearInterval(iv); ban.style.display='none'; return; }
-    if(!code){ info.textContent='Code wird gesendet…'; return; }
+    if(!code){ info.textContent='Code wird vorbereitet…'; return; }
     left--; info.textContent=`Code läuft ab in ${left} s`;
-    if(left<=0){ toast('Code abgelaufen. Neuer Code unterwegs…'); code=''; setTimeout(()=>{ if(cur==='mail') send(); },2500); }
+    if(left<=0){ toast('Der Code ist abgelaufen. Ein neuer Code wird vorbereitet.'); code=''; setTimeout(()=>{ if(cur==='mail') send(); },2500); }
   },1000);
   $('mailBtn').onclick=()=>{
     if(code && inp.value.trim()===code){ clearInterval(iv); ban.style.display='none'; next(); }
-    else toast('Falscher Code. 📧');
+    else toast('Der Code ist ungültig.');
   };
 }
 
@@ -427,8 +427,8 @@ function startSlider(){
   const set=()=>{ tx.textContent=`Stelle den Regler auf exakt ${T[r]}.`; rng.value=Math.floor(Math.random()*100); val.textContent=rng.value; };
   rng.oninput=()=>val.textContent=rng.value;
   $('rngBtn').onclick=()=>{
-    if(+rng.value===T[r]){ r++; if(r>=T.length) return next(); toast(`Geschafft. Noch ${T.length-r} Runde${T.length-r>1?'n':''}. 😇`); set(); }
-    else toast(`Das ist ${rng.value}. Nicht ${T[r]}. 🧐`);
+    if(+rng.value===T[r]){ r++; if(r>=T.length) return next(); toast(`Wert bestätigt. Noch ${T.length-r} Runde${T.length-r>1?'n':''}.`); set(); }
+    else toast(`Aktueller Wert: ${rng.value}. Zielwert: ${T[r]}.`);
   };
   set();
 }
